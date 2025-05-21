@@ -1,22 +1,23 @@
 <!-- Conditional rendering -->
 @if(events.length == 0){
 <div>
-  <p class="text-gray-400 text-center text-2xl mt-5 mb-5">There aren't existing events.</p>
+  <p class="text-gray-400 text-center text-lg md:text-2xl mt-5 mb-5">There aren't existing events.</p>
 </div>
 }@else {
 <!-- Order list by date -->
 <div class="orderByBtns text-center">
-  <button (click)="toggleOrderBy()">
+  <button (click)="toggleOrderBy()" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
     Sort events by Date{{ orderByRecent ? " (Newest)" : " (Oldest)" }}
+  </button>
+  <button (click)="openCalendar()" class="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50">
+    View Calendar
   </button>
 </div>
 
-
-<div class="event-lst mt-12">
+<div class="event-lst mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 px-4">
   @for (singleEvent of events; track singleEvent.uuid) {
   <app-event-item
     [event]="singleEvent"
-    
     (refreshEvents)="refreshEvents()"
     [isFirst]="singleEvent === events[0]"
   ></app-event-item>

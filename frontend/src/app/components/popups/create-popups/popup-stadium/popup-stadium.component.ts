@@ -59,6 +59,9 @@ export class PopupStadiumComponent implements OnInit {
         '',
         [Validators.required, Validators.min(1), Validators.max(300000)],
       ],
+      address: ['', [Validators.maxLength(512)]],
+      latitude: ['', [Validators.min(-90), Validators.max(90)]],
+      longitude: ['', [Validators.min(-180), Validators.max(180)]]
     });
   }
   closePopup(value: boolean) {
@@ -66,8 +69,21 @@ export class PopupStadiumComponent implements OnInit {
   }
 
   myForm = this.builder.group({
-    name: this.builder.control(''),
-    capacity: this.builder.control(''),
+    name: this.builder.control('', [
+      Validators.required,
+      Validators.maxLength(30),
+      Validators.pattern(/^\S.*\S$/)
+    ]),
+    capacity: this.builder.control('', [
+      Validators.required,
+      Validators.min(1),
+      Validators.max(300000)
+    ]),
+    address: this.builder.control('', [
+      Validators.maxLength(512)
+    ]),
+    latitude: ['', [Validators.required, Validators.min(-90), Validators.max(90)]],
+    longitude: ['', [Validators.required, Validators.min(-180), Validators.max(180)]]
   });
 
   saveStadium() {

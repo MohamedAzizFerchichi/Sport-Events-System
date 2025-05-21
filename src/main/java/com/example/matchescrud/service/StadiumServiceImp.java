@@ -67,7 +67,8 @@ public class StadiumServiceImp implements IStadiumService {
 
         if (optionalStadium.isPresent()) {
             Stadium existingStadium = optionalStadium.get();
-
+            existingStadium.setLatitude(stadiumDTO.getLatitude());
+            existingStadium.setLongitude(stadiumDTO.getLongitude());
             if (stadiumDTO.getName() != null) {
                 existingStadium.setName(stadiumDTO.getName());
             }
@@ -75,6 +76,7 @@ public class StadiumServiceImp implements IStadiumService {
                 existingStadium.setCapacity(stadiumDTO.getCapacity());
             }
             if (stadiumDTO.getCapacity() > 0 || stadiumDTO.getName() != null) {
+                System.out.println(existingStadium);
                 stadiumRepository.save(existingStadium);
                 return stadiumMapper.stadiumToStadiumDTO(existingStadium);
             }

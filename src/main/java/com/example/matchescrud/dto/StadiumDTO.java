@@ -11,4 +11,7 @@ public class StadiumDTO {
     private Long id;
     private String name;
     private int capacity;
+    private double latitude;  // New field
+    private double longitude; // New field
+    private String address;   // New field
 }

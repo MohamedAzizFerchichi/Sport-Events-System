@@ -42,6 +42,7 @@ public class StadiumController {
     //Put
     @PutMapping("/stadium/{id}")
     public ResponseEntity<?> updateStadiumById(@Valid @PathVariable Long id, @RequestBody StadiumDTO stadiumDTO) throws ApiException {
+        System.out.println(stadiumDTO.getLongitude());
         return new ResponseEntity<>(stadiumServiceImp.updateStadiumById(id, stadiumDTO), HttpStatus.OK);
     }
 

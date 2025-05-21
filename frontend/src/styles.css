@@ -15,3 +15,18 @@ body {
   background-image: linear-gradient(to right, #1b1b1b, #2c1c30);
   margin: 0;
 }
+/* FullCalendar overrides */
+.fc .fc-daygrid-day-frame {
+  min-height: 80px;
+}
+
+.fc .fc-event {
+  border-radius: 4px;
+  border: none;
+  background-color: #3f51b5;
+  color: white;
+}
+
+.fc .fc-daygrid-event {
+  margin: 2px;
+}

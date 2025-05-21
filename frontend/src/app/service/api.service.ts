@@ -6,6 +6,7 @@ import { Team } from '../models/team';
 import { City } from '../models/city';
 import { Event } from '../models/event';
 import { Division } from '../models/division';
+import { AdminStats } from '../admin/models/admin-stats';
 
 @Injectable({
   providedIn: 'root',
@@ -182,5 +183,21 @@ export class ApiService {
           this._refreshDivisions$.next();
         })
       );
+  }
+
+  getAdminStats(): Observable<AdminStats> {
+    return this.http.get<AdminStats>(`${this.API_URL}/admin/stats/matches`);
+  }
+
+  getRevenueStats(): Observable<Record<string, number>> {
+    return this.http.get<Record<string, number>>(`${this.API_URL}/admin/stats/revenue`);
+  }
+
+  getSpectatorsStats(): Observable<Record<string, number>> {
+    return this.http.get<Record<string, number>>(`${this.API_URL}/admin/stats/spectators`);
+  }
+
+  getMonthlyRevenue(): Observable<Record<string, number>> {
+    return this.http.get<Record<string, number>>(`${this.API_URL}/admin/stats/monthly-revenue`);
   }
 }

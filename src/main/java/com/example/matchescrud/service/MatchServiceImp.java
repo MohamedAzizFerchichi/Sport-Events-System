@@ -4,6 +4,7 @@ import com.example.matchescrud.Mapper.MatchRequestMapper;
 import com.example.matchescrud.Mapper.MatchResponseDTOMapper;
 import com.example.matchescrud.dto.request.MatchRequestDTO;
 import com.example.matchescrud.dto.response.MatchResponseDTO;
+import com.example.matchescrud.dto.response.MatchStatsResponse;
 import com.example.matchescrud.exceptions.ApiException;
 import com.example.matchescrud.exceptions.NotFoundExceptions.MatchNotFoundException;
 import com.example.matchescrud.exceptions.NotFoundExceptions.TeamNotFoundException;
@@ -17,9 +18,11 @@ import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.time.LocalDate;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 public class MatchServiceImp implements IMatchService {
@@ -29,7 +32,8 @@ public class MatchServiceImp implements IMatchService {
     TeamRepository teamRepository;
     MatchResponseDTOMapper matchResponseDTOMapper;
     MatchRequestMapper matchRequestMapper;
-    public MatchServiceImp(MatchRepository matchRepository, TeamRepository teamRepository, MatchRequestMapper matchRequestMapper, MatchResponseDTOMapper matchResponseDTOMapper){
+
+    public MatchServiceImp(MatchRepository matchRepository, TeamRepository teamRepository, MatchRequestMapper matchRequestMapper, MatchResponseDTOMapper matchResponseDTOMapper) {
         this.matchRepository = matchRepository;
         this.teamRepository = teamRepository;
         this.matchRequestMapper = matchRequestMapper;
@@ -81,7 +85,7 @@ public class MatchServiceImp implements IMatchService {
         //Set Random UUID
         match.setUuid(UUID.randomUUID());
         //Set HomeTeam stadium as match stadium
-        if(match.getSpectators() > homeTeam.getStadium().getCapacity()){
+        if (match.getSpectators() > homeTeam.getStadium().getCapacity()) {
             throw new StadiumSizeException(match.getSpectators(), homeTeam.getStadium());
         }
         match.setStadium(homeTeam.getStadium());
@@ -105,8 +109,85 @@ public class MatchServiceImp implements IMatchService {
 
     }
 
-    public void addMatchToTeams(Team homeTeam, Team awayTeam, Match match){
+    public void addMatchToTeams(Team homeTeam, Team awayTeam, Match match) {
         homeTeam.getHomeMatches().add(match);
         awayTeam.getAwayMatches().add(match);
+    }
+
+    // Add these methods to your existing MatchServiceImp class
+
+    @Override
+    public MatchStatsResponse getMatchesStatistics() {
+        List<Match> allMatches = matchRepository.findAll();
+
+        long totalMatches = allMatches.size();
+        long upcomingMatches = allMatches.stream()
+                .filter(m -> m.getDate().isAfter(LocalDate.now()))
+                .count();
+        long completedMatches = totalMatches - upcomingMatches;
+
+        Map<String, Integer> matchesPerTeam = allMatches.stream()
+                .flatMap(m -> Stream.of(m.getHomeTeam().getName(), m.getAwayTeam().getName()))
+                .collect(Collectors.groupingBy(Function.identity(), Collectors.summingInt(e -> 1)));
+
+        BigDecimal totalRevenue = allMatches.stream()
+                .map(Match::getRevenue)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        int totalSpectators = allMatches.stream()
+                .mapToInt(Match::getSpectators)
+                .sum();
+
+        double averageSpectators = totalMatches > 0 ? (double) totalSpectators / totalMatches : 0;
+
+        return new MatchStatsResponse(
+                totalMatches,
+                upcomingMatches,
+                completedMatches,
+                matchesPerTeam,
+                totalRevenue,
+                totalSpectators,
+                averageSpectators
+        );
+    }
+
+    @Override
+    public Map<String, BigDecimal> getRevenueStatistics() {
+        List<Match> allMatches = matchRepository.findAll();
+
+        return allMatches.stream()
+                .collect(Collectors.groupingBy(
+                        m -> m.getDate().getMonth().toString(),
+                        Collectors.reducing(
+                                BigDecimal.ZERO,
+                                Match::getRevenue,
+                                BigDecimal::add
+                        )
+                ));
+    }
+
+    @Override
+    public Map<String, Integer> getSpectatorsStatistics() {
+        List<Match> allMatches = matchRepository.findAll();
+
+        return allMatches.stream()
+                .collect(Collectors.groupingBy(
+                        m -> m.getDate().getMonth().toString(),
+                        Collectors.summingInt(Match::getSpectators)
+                ));
+    }
+
+    @Override
+    public Map<String, BigDecimal> getMonthlyRevenue() {
+        List<Object[]> results = matchRepository.getMonthlyRevenue();
+        Map<String, BigDecimal> monthlyRevenue = new LinkedHashMap<>();
+
+        for (Object[] result : results) {
+            String month = (String) result[0];
+            BigDecimal revenue = (BigDecimal) result[1];
+            monthlyRevenue.put(month, revenue);
+        }
+
+        return monthlyRevenue;
     }
 }

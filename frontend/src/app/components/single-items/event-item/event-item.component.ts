@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { ApiService } from '../../../service/api.service';
 import { MatDialog } from '@angular/material/dialog';
 import { EventDetailPopupComponent } from '../../popups/event-detail-popup/event-detail-popup.component';
+import { MatchQrCodeComponent } from './match-qr-code/match-qr-code.component';
 
 
 @Component({
@@ -58,6 +59,12 @@ export class EventItemComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe(result => {
+    });
+  }
+  openQrModal(): void {
+    this.dialog.open(MatchQrCodeComponent, {
+      width: '350px',
+      data: this.event
     });
   }
 }

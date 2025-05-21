@@ -16,4 +16,7 @@ public class Stadium {
     private Long id;
     private String name;
     private int capacity;
+    private double latitude;
+    private double longitude; // New field for map coordinates
+    private String address;  // Optional field for address
 }

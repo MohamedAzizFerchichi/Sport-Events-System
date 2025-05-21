@@ -1,6 +1,8 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { EventItemComponent } from '../../single-items/event-item/event-item.component';
 import { Event } from '../../../models/event';
+import { MatDialog } from '@angular/material/dialog';
+import { EventCalendarComponent } from '../../single-items/event-item/event-calendar/event-calendar.component';
 
 @Component({
   selector: 'app-event-list',
@@ -14,7 +16,7 @@ export class EventListComponent implements OnInit {
   @Output() refreshHomeEvents: EventEmitter<void> = new EventEmitter<void>();
   orderByRecent: boolean = true;
 
-  constructor() {}
+  constructor(private dialog: MatDialog) {}
 
   ngOnInit(): void {
     this.sortEvents();
@@ -38,5 +40,12 @@ export class EventListComponent implements OnInit {
         (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
       );
     }
+  }
+  openCalendar(): void {
+    this.dialog.open(EventCalendarComponent, {
+      width: '95%',
+      maxWidth: '900px',
+      data: { events: this.events }
+    });
   }
 }

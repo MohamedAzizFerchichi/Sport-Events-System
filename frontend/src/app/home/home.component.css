@@ -49,3 +49,37 @@ button:hover{
   border-radius: 6px;
 }
 
+
+.admin-access {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+}
+
+.admin-access button {
+  background-color: rgba(88, 88, 88, 0.5);
+  border: 2px solid #b4b4b4;
+  border-radius: 10px;
+  color: white;
+  padding: 8px 16px;
+}
+
+.admin-access button:hover {
+  background-color: rgba(148, 148, 148, 0.4);
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+}
+
+.login-form mat-form-field {
+  margin-bottom: 15px;
+}
+
+.login-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+

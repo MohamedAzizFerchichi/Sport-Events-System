@@ -29,4 +29,16 @@ public class MatchResponseDTO {
     private int spectators;
     private BigDecimal revenue; //Calculated by spectators number
 
+    public String toQrString() {
+        return String.format(
+                "Match: %s vs %s%nDate: %s%nTime: %s%nStadium: %s%nAddress: %s",
+                homeTeam.getName(),
+                awayTeam.getName(),
+                date.toString(),
+                time.toString(),
+                stadium.getName(),
+                stadium.getAddress()
+        );
+    }
+
 }
