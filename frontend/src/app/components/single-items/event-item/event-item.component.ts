@@ -5,12 +5,16 @@ import { ApiService } from '../../../service/api.service';
 import { MatDialog } from '@angular/material/dialog';
 import { EventDetailPopupComponent } from '../../popups/event-detail-popup/event-detail-popup.component';
 import { MatchQrCodeComponent } from './match-qr-code/match-qr-code.component';
-
+import { MatButtonModule, MatIconAnchor } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
   selector: 'app-event-item',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule , MatButtonModule,
+    MatIconModule,
+    MatTooltipModule],
   templateUrl: './event-item.component.html',
   styleUrls: ['./event-item.component.css'],
   providers: [ApiService]
